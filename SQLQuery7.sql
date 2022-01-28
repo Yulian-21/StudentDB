@@ -18,3 +18,11 @@ Add constraint PK_Department_DepartmentID
 primary key clustered (DepartmentID)
 Go
 
+insert into Department(DepartmentName) values
+('Electronic'),
+('Filological'),
+('Mathematical'),
+('Philosophical')
+go
+
+
