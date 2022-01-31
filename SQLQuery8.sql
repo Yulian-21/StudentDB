@@ -198,3 +198,27 @@ inner join
 ) as TotalStodentsPerGroup
 on TotalBooksPerGroup.GroupName = TotalStodentsPerGroup.GroupName
 
+
+Select * 
+from Students
+left join LibraryActivity
+on Students.StudentID = LibraryActivity.StudentId 
+inner join Groups
+on Students.GroupId = Groups.GroupID
+join Department
+on Groups.DepartmentId = Department.DepartmentID
+where Department.DepartmentName = 'Mathematical'
+and LibraryActivity.DateOfReceiving is null
+
+
+Select Groups.Name, count(*)
+from Groups
+inner join Students
+on Groups.GroupID = Students.GroupId
+inner join LibraryActivity
+on Students.StudentID = LibraryActivity.StudentId
+inner join Department
+on Department.DepartmentID = Groups.DepartmentId
+where Department.DepartmentName = 'Electronic'
+Group by Groups.Name
+having Count(*)>=2
