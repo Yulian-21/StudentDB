@@ -172,13 +172,7 @@ alter table ClientsRepresentative
 add FromCompany int not null
 go
 
-alter table ProjectManagers
-with check add constraint FK_ProjMngs_Ceos
-foreign key (ReportingToCEO)
-references CEOs(CEOID)
-on update cascade
-on delete cascade
-go
+
 
 alter table RecruiteOffice
 with check add constraint FK_RecruiteOffice_ProjMngs
@@ -238,13 +232,7 @@ on update cascade
 on delete cascade
 go
 
-alter table Employees
-with check add constraint FK_Employees_WM
-foreign key (WorkingMachineID)
-References WorkingMachine(MachineID)
-on update cascade
-on delete cascade
-go
+
 
 alter table Employees
 with check add constraint FK_Employees_Recruiter
@@ -283,3 +271,110 @@ go
 
 alter table ProjectManagers
 drop column SalaryId
+
+alter table ProjectManagers
+add RankId int not null
+
+alter table ProjectManagers
+with check add constraint FK_ProjMngs_Ceos
+foreign key (ReportingToCEO)
+references CEOs(CEOID)
+on update cascade
+on delete cascade
+go
+
+alter table ProjectManagers
+with check add constraint FK_ProjectManagers_Ranks
+foreign key (RankId)
+references Ranks(RankID)
+on update no action
+on delete no action
+go
+
+
+
+create table EmployeeActivity
+(
+ActivID int identity(1,1) not null,
+EmployeeId int not null,
+TeamId int not null
+)
+
+alter table Projects
+add ProjectStartDate datetime not null
+
+alter table Projects
+add constraint DF_Projects_StartDate
+Default getdate() for ProjectStartDate;
+
+
+
+exec sp_rename 'RecruiteOffice.SalaryId', 'RankId';
+
+alter table RecruiteOffice
+with check add constraint FK_RecruiteOffice_Ranks
+foreign key(RankId)
+references Ranks(RankID)
+on update no action
+on delete no action
+go
+
+alter table EmployeeActivity 
+with check add constraint FK_EmpAct_Employees
+foreign key (EmployeeId)
+references Employees(EmployeeID)
+on update cascade
+on delete set null
+
+alter table EmployeeActivity 
+with check add constraint FK_EmpAct_Teams
+foreign key (TeamId)
+references Teams(TeamID)
+on update cascade
+on delete set null
+
+alter table Employees
+with check add constraint FK_Employees_WM
+foreign key (WorkingMachineID)
+References WorkingMachine(MachineID)
+on update cascade
+on delete set null
+go
+
+alter table Employees
+with check add constraint FK_Employees_Ranks
+foreign key (RanksId)
+References Ranks(RankID)
+on update cascade
+on delete set null
+go
+
+alter table Employees
+with check add constraint FK_Employees_PM
+foreign key (ReportingTo)
+References ProjectManagers(PMID)
+on update no action
+on delete no action
+go
+
+alter table EmployeeActivity
+alter column EmployeeId int null
+
+alter table EmployeeActivity
+alter column TeamId int null
+
+alter table Employees
+alter column WorkingMachineId int null
+
+alter table Employees
+alter column HiredBy int null
+
+alter table Employees
+alter column RanksId int null
+
+alter table Employees
+alter column ReportingTo int null
+
+alter table Ranks
+alter Column SalaryId int null
+
